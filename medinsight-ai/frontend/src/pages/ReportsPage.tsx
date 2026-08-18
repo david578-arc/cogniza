@@ -30,10 +30,10 @@ import { Patient, ReportSummaryResponse } from '../types/clinical';
 
 export const ReportsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPatientId = searchParams.get('patientId') ? parseInt(searchParams.get('patientId')!, 10) : 1;
+  const initialPatientId = searchParams.get('patientId') ? parseInt(searchParams.get('patientId')!, 10) : null;
   
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [selectedPatientId, setSelectedPatientId] = useState<number>(initialPatientId);
+  const [selectedPatientId, setSelectedPatientId] = useState<number | null>(initialPatientId);
   const [reportType, setReportType] = useState<string>('discharge');
   const [reportData, setReportData] = useState<ReportSummaryResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,8 +48,10 @@ export const ReportsPage: React.FC = () => {
       try {
         const data = await patientService.getPatients(undefined, undefined, searchQuery || undefined);
         setPatients(data);
-        if (data.length > 0 && !selectedPatientId) {
-          setSelectedPatientId(data[0].id);
+        if (data && data.length > 0) {
+          if (!selectedPatientId || !data.some(p => p.id === selectedPatientId)) {
+            setSelectedPatientId(data[0].id);
+          }
         }
       } catch (err) {
         console.error('Failed to load patients for reports', err);
@@ -85,7 +87,7 @@ export const ReportsPage: React.FC = () => {
   };
 
   const handleDownloadPdf = async () => {
-    if (!reportData) return;
+    if (!reportData || !selectedPatientId) return;
     try {
       setDownloadingPdf(true);
       setDownloadSuccess(null);
@@ -142,8 +144,8 @@ export const ReportsPage: React.FC = () => {
           </button>
 
           <a
-            href={`/api/patients/${selectedPatientId}/report/pdf?report_type=${reportType}`}
-            download={`${reportType === 'discharge' ? 'Discharge_Summary' : 'Clinical_Report'}_${(selectedPatient?.mrn || `P${selectedPatientId}`).replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`}
+            href={patientService.getReportPdfUrl(selectedPatientId || 1, reportType)}
+            download={`${reportType === 'discharge' ? 'Discharge_Summary' : 'Clinical_Report'}_${(selectedPatient?.mrn || `P${selectedPatientId || 1}`).replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`}
             className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-sm flex items-center gap-2 transition cursor-pointer"
             title="Download official PDF document"
           >

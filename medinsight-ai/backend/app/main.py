@@ -49,10 +49,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure Hardened CORS: Explicit trusted origins only
+# Configure Comprehensive CORS (allowing all localhost ports, Amplify, and Cloud domains)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origin_regex=r"^https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

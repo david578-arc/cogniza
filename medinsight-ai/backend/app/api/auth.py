@@ -35,6 +35,8 @@ def login(login_data: UserLogin, db=Depends(get_mongodb)):
     }
     access_token = create_access_token(token_payload)
 
+if isinstance(access_token, bytes):
+    access_token = access_token.decode("utf-8")
     log_audit_event(
         db=db,
         user=current_user,

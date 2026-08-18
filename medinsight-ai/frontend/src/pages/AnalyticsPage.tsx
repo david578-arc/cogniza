@@ -141,11 +141,10 @@ export const AnalyticsPage: React.FC = () => {
         <div className="flex items-center gap-2 border-b border-slate-200 pb-1 flex-wrap">
           <button
             onClick={() => setActiveTab('operations')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'operations'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'operations'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <Building2 className="w-3.5 h-3.5 text-indigo-400" />
             <span>1. Hospital Capacity & Wards</span>
@@ -153,11 +152,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('financial')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'financial'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'financial'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
             <span>2. Financial ROI & CMS Penalties</span>
@@ -165,11 +163,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('transitions')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'transitions'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'transitions'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <PhoneCall className="w-3.5 h-3.5 text-purple-400" />
             <span>3. Care Transitions & Interventions</span>
@@ -177,11 +174,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('model')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'model'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'model'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <BrainCircuit className="w-3.5 h-3.5 text-sky-400" />
             <span>4. Model AI & Calibration</span>
@@ -189,11 +185,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('demographics')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'demographics'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'demographics'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <Users className="w-3.5 h-3.5 text-indigo-400" />
             <span>5. Demographics & Age</span>
@@ -201,11 +196,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('diagnoses')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'diagnoses'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'diagnoses'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <HeartPulse className="w-3.5 h-3.5 text-rose-400" />
             <span>6. Disease Cohorts</span>
@@ -213,11 +207,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('glycemic')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'glycemic'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'glycemic'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <Pill className="w-3.5 h-3.5 text-amber-400" />
             <span>7. Glycemic Control</span>
@@ -225,11 +218,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('utilization')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'utilization'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'utilization'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <Clock className="w-3.5 h-3.5 text-teal-400" />
             <span>8. Hospital LOS</span>
@@ -237,11 +229,10 @@ export const AnalyticsPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('fairness')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
-              activeTab === 'fairness'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${activeTab === 'fairness'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+              }`}
           >
             <Scale className="w-3.5 h-3.5 text-emerald-400" />
             <span>9. Responsible AI Audit</span>
@@ -412,10 +403,10 @@ export const AnalyticsPage: React.FC = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={analytics?.los_by_risk_tier || [
-                      { tier: 'Critical Risk', los: 7.2, target: 5.5, nationalAvg: 6.8 },
-                      { tier: 'High Risk', los: 5.4, target: 4.2, nationalAvg: 5.1 },
-                      { tier: 'Moderate Risk', los: 3.8, target: 3.0, nationalAvg: 3.9 },
-                      { tier: 'Low Risk', los: 2.3, target: 2.0, nationalAvg: 2.5 }
+                      { tier: 'Critical Risk', los: 7.2, target: 5.5, nationalAvg: 6.8, color: '#ef4444' },
+                      { tier: 'High Risk', los: 5.4, target: 4.2, nationalAvg: 5.1, color: '#f97316' },
+                      { tier: 'Moderate Risk', los: 3.8, target: 3.0, nationalAvg: 3.9, color: '#eab308' },
+                      { tier: 'Low Risk', los: 2.3, target: 2.0, nationalAvg: 2.5, color: '#10b981' }
                     ]}
                     margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                   >
@@ -521,11 +512,11 @@ export const AnalyticsPage: React.FC = () => {
                     <BarChart
                       layout="vertical"
                       data={analytics?.cost_savings_by_service || [
-                        { service: 'Circulatory & Heart', savings: 684000, averted: 45 },
-                        { service: 'Diabetes Complications', savings: 547200, averted: 36 },
-                        { service: 'Respiratory & COPD', savings: 425600, averted: 28 },
-                        { service: 'Renal & Kidney', savings: 319200, averted: 21 },
-                        { service: 'Surgical / Other', savings: 182400, averted: 12 }
+                        { service: 'Circulatory & Heart', savings: 684000, averted: 45, percentage: 31.7, color: '#0ea5e9' },
+                        { service: 'Diabetes Complications', savings: 547200, averted: 36, percentage: 25.3, color: '#10b981' },
+                        { service: 'Respiratory & COPD', savings: 425600, averted: 28, percentage: 19.7, color: '#6366f1' },
+                        { service: 'Renal & Kidney', savings: 319200, averted: 21, percentage: 14.8, color: '#f59e0b' },
+                        { service: 'Surgical / Other', savings: 182400, averted: 12, percentage: 8.5, color: '#ec4899' }
                       ]}
                       margin={{ top: 10, right: 30, left: 40, bottom: 10 }}
                     >
@@ -654,11 +645,11 @@ export const AnalyticsPage: React.FC = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={analytics?.intervention_efficacy || [
-                      { intervention: 'Pharmacist Med-Rec', reductionPct: 28.4, readmitRate: 8.1, baselineRate: 11.3 },
-                      { intervention: 'Continuous Glucose RPM', reductionPct: 31.5, readmitRate: 7.7, baselineRate: 11.2 },
-                      { intervention: '48-Hour Call-Back', reductionPct: 22.1, readmitRate: 8.8, baselineRate: 11.3 },
-                      { intervention: 'Diabetes Educator (CDE)', reductionPct: 19.8, readmitRate: 9.1, baselineRate: 11.3 },
-                      { intervention: 'Home Physical Therapy', reductionPct: 24.6, readmitRate: 8.5, baselineRate: 11.3 }
+                      { intervention: 'Pharmacist Med-Rec', reductionPct: 28.4, patientsEnrolled: 340, readmitRate: 8.1, baselineRate: 11.3, status: 'Active' },
+                      { intervention: 'Continuous Glucose RPM', reductionPct: 31.5, patientsEnrolled: 215, readmitRate: 7.7, baselineRate: 11.2, status: 'Active' },
+                      { intervention: '48-Hour Call-Back', reductionPct: 22.1, patientsEnrolled: 580, readmitRate: 8.8, baselineRate: 11.3, status: 'Active' },
+                      { intervention: 'Diabetes Educator (CDE)', reductionPct: 19.8, patientsEnrolled: 190, readmitRate: 9.1, baselineRate: 11.3, status: 'Active' },
+                      { intervention: 'Home Physical Therapy', reductionPct: 24.6, patientsEnrolled: 145, readmitRate: 8.5, baselineRate: 11.3, status: 'Active' }
                     ]}
                     margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
                   >
@@ -867,9 +858,9 @@ export const AnalyticsPage: React.FC = () => {
                       {(analytics?.readmission_by_age_group || []).map((a, idx) => (
                         <tr key={idx} className="hover:bg-slate-50">
                           <td className="py-2 font-bold text-slate-800">{a.ageGroup} yrs</td>
-                          <td className="py-2 font-mono text-slate-600">{a.volume.toLocaleString()}</td>
+                          <td className="py-2 font-mono text-slate-600">{(a.volume ?? a.patientCount ?? 0).toLocaleString()}</td>
                           <td className="py-2 font-bold text-slate-900">{a.readmissionRate}%</td>
-                          <td className="py-2 text-slate-600">{a.avgStayDays || 4.3}d</td>
+                          <td className="py-2 text-slate-600">{a.avgStayDays ?? a.avgStay ?? 4.3}d</td>
                         </tr>
                       ))}
                     </tbody>
@@ -895,27 +886,35 @@ export const AnalyticsPage: React.FC = () => {
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={analytics?.readmission_by_diagnosis || []}
+                  data={(analytics?.readmission_by_diagnosis || []).map(d => ({
+                    ...d,
+                    displayLabel: d.diagnosis || d.category || 'Other',
+                    displayRate: d.rate ?? d.readmissionRate ?? 0,
+                    displayCount: d.patientCount ?? d.volume ?? 0
+                  }))}
                   layout="vertical"
                   margin={{ top: 5, right: 30, left: 160, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                   <XAxis type="number" stroke="#94a3b8" fontSize={11} domain={[0, 20]} unit="%" />
-                  <YAxis type="category" dataKey="diagnosis" stroke="#334155" fontSize={11} width={155} />
+                  <YAxis type="category" dataKey="displayLabel" stroke="#334155" fontSize={11} width={155} />
                   <Tooltip
                     formatter={(value: any, name: any, item: any) => [
-                      `${value}% Readmit (${item.payload.patientCount?.toLocaleString()} patients)`,
+                      `${value}% Readmit (${(item.payload.displayCount ?? item.payload.patientCount)?.toLocaleString()} patients)`,
                       '30-Day Readmission'
                     ]}
                     contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '0.5rem', fontSize: '11px' }}
                   />
-                  <Bar dataKey="rate" fill="#0284c7" radius={[0, 4, 4, 0]}>
-                    {(analytics?.readmission_by_diagnosis || []).map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={entry.rate > 13 ? '#e11d48' : entry.rate > 11 ? '#f97316' : '#0284c7'}
-                      />
-                    ))}
+                  <Bar dataKey="displayRate" fill="#0284c7" radius={[0, 4, 4, 0]}>
+                    {(analytics?.readmission_by_diagnosis || []).map((entry, index) => {
+                      const r = entry.rate ?? entry.readmissionRate ?? 0;
+                      return (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={r > 13 ? '#e11d48' : r > 11 ? '#f97316' : '#0284c7'}
+                        />
+                      );
+                    })}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>

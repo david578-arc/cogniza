@@ -70,7 +70,7 @@ export const ApiDataSourcesPage: React.FC = () => {
             Ping Connectors
           </button>
           <a
-            href="http://localhost:8000/docs"
+            href={import.meta.env.VITE_API_BASE_URL ? `${import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '')}/docs` : "https://cognizant-backend.blackpebble-636333ef.westus2.azurecontainerapps.io/docs"}
             target="_blank"
             rel="noopener noreferrer"
             className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 transition-colors"

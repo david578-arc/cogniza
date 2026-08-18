@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     GENAI_MODEL: str = "gemini-1.5-flash"
 
     # CORS
-    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
+    CORS_ORIGINS: str = "https://gentle-mud-09bc59910.7.azurestaticapps.net,http://localhost:5173,http://localhost:5174,http://localhost:3000,*"
 
     # Risk thresholds
     RISK_LOW_MAX: float = 0.30

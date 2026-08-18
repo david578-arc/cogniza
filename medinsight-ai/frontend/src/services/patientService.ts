@@ -65,11 +65,13 @@ export const patientService = {
   },
 
   getReportPdfUrl: (patientId: number, reportType: string = 'discharge'): string => {
-    return `/api/patients/${patientId}/report/pdf?report_type=${reportType}`;
+    const base = import.meta.env.VITE_API_BASE_URL || '/api';
+    return `${base}/patients/${patientId}/report/pdf?report_type=${reportType}`;
   },
 
   downloadReportPdf: async (patientId: number, mrn?: string, reportType: string = 'discharge'): Promise<void> => {
-    const url = `/api/patients/${patientId}/report/pdf?report_type=${reportType}`;
+    const base = import.meta.env.VITE_API_BASE_URL || '/api';
+    const url = `${base}/patients/${patientId}/report/pdf?report_type=${reportType}`;
     const prefix = reportType === 'discharge' ? 'Discharge_Summary' : 'Clinical_Report';
     const mrnClean = (mrn || `P${patientId}`).replace(/[^a-zA-Z0-9_-]/g, '_');
     const filename = `${prefix}_${mrnClean}.pdf`;

@@ -324,52 +324,65 @@ export interface AnalyticsSummary {
     High: number;
     Critical: number;
   };
-  monthly_trend: Array<{
+  monthly_trend?: Array<{
     month: string;
     readmissionRate: number;
     nationalBenchmark: number;
     target: number;
     interventions: number;
+    [key: string]: any;
   }>;
-  readmission_by_diagnosis: Array<{
-    diagnosis: string;
-    rate: number;
-    patientCount: number;
+  readmission_by_diagnosis?: Array<{
+    diagnosis?: string;
+    category?: string;
+    rate?: number;
+    readmissionRate?: number;
+    patientCount?: number;
+    volume?: number;
     readmit30dCount?: number;
-    riskLevel: string;
+    riskLevel?: string;
+    highRiskPct?: number;
+    [key: string]: any;
   }>;
-  readmission_by_age_group: Array<{
+  readmission_by_age_group?: Array<{
     ageGroup: string;
     readmissionRate: number;
-    volume: number;
+    volume?: number;
+    patientCount?: number;
     readmit30dCount?: number;
     avgStayDays?: number;
+    avgStay?: number;
     avgRisk?: number;
+    [key: string]: any;
   }>;
-  department_distribution: Array<{
+  department_distribution?: Array<{
     department: string;
     criticalCount: number;
     highCount: number;
     total: number;
+    [key: string]: any;
   }>;
-  model_metrics: {
-    auroc: number;
-    accuracy: number;
-    precision: number;
-    recall: number;
-    f1: number;
-    brier_score: number;
+  model_metrics?: {
+    auroc?: number;
+    accuracy?: number;
+    precision?: number;
+    recall?: number;
+    f1?: number;
+    brier_score?: number;
+    calibration_slope?: number;
+    calibration_intercept?: number;
     decision_threshold?: number;
     model_name?: string;
-    model_version: string;
+    model_version?: string;
     evaluated_cohort_size?: number;
     total_training_records?: number;
     unique_training_patients?: number;
     features_count?: number;
-    calibration_status: string;
+    calibration_status?: string;
     disclaimer?: string;
+    [key: string]: any;
   };
-  fairness_metrics: Array<{
+  fairness_metrics?: Array<{
     group: string;
     sample_size: number;
     accuracy: number;
@@ -377,6 +390,7 @@ export interface AnalyticsSummary {
     fpr: number;
     selection_rate: number;
     disparate_impact: number;
+    [key: string]: any;
   }>;
   total_dataset_encounters?: number;
   total_unique_patients?: number;
@@ -397,9 +411,13 @@ export interface AnalyticsSummary {
   hrrp_penalty_savings_usd?: number;
   cost_savings_by_service?: Array<{ service: string; savings: number; averted: number; percentage: number; color: string }>;
   total_hospital_beds?: number;
+  current_occupied_beds?: number;
   current_occupancy_pct?: number;
   icu_occupancy_pct?: number;
+  icu_capacity_pct?: number;
   bed_turnover_hours?: number;
+  cms_penalty_avoidance_usd?: number;
+  care_transition_savings_usd?: number;
   los_by_risk_tier?: Array<{ tier: string; los: number; target: number; nationalAvg: number; color: string }>;
   department_metrics?: Array<{ department: string; beds: number; occupied: number; occupancy: number; readmissionRate: number; avgLos: number; criticalCount: number; highCount: number }>;
   intervention_efficacy?: Array<{ intervention: string; reductionPct: number; patientsEnrolled: number; readmitRate: number; baselineRate: number; status: string }>;
@@ -408,7 +426,9 @@ export interface AnalyticsSummary {
     pcp_7d_compliance_pct?: number;
     med_supply_at_discharge_pct?: number;
     dietary_plan_adherence_pct?: number;
+    [key: string]: any;
   };
+  [key: string]: any;
 }
 
 

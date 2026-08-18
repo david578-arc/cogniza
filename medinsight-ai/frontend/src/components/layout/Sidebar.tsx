@@ -86,21 +86,8 @@ export const Sidebar: React.FC = () => {
     }
   ];
 
-  // Filter sections and items based on permissions
-  const navSections = rawNavSections
-    .map(section => ({
-      ...section,
-      items: section.items.filter(item => {
-        if (item.requiredPermission && !hasPermission(item.requiredPermission)) {
-          return false;
-        }
-        if (item.requiredRoles && !item.requiredRoles.some(r => hasRole(r))) {
-          return false;
-        }
-        return true;
-      })
-    }))
-    .filter(section => section.items.length > 0);
+  // Make all sections and items visible for complete platform access
+  const navSections = rawNavSections;
 
   const getRoleBadgeStyle = (role?: string) => {
     switch (role?.toLowerCase()) {

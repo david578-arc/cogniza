@@ -46,7 +46,8 @@ export const RiskAssessmentPage: React.FC = () => {
   const [activePatientId, setActivePatientId] = useState<number | null>(
     paramPatientId ? Number(paramPatientId) : null
   );
-  const encounterId = paramEncounterId || 'latest';
+  const [selectedEncounterId, setSelectedEncounterId] = useState<string>(paramEncounterId || 'latest');
+  const [patientOptions, setPatientOptions] = useState<Patient[]>([]);
 
   // Data states
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -68,63 +69,64 @@ export const RiskAssessmentPage: React.FC = () => {
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
+  // Load available patients list for selector
+  useEffect(() => {
+    const loadPatientsList = async () => {
+      try {
+        const pts = await patientService.getPatients();
+        if (pts && pts.length > 0) {
+          setPatientOptions(pts);
+          if (!activePatientId && !paramPatientId) {
+            setActivePatientId(pts[0].id);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load patient options for selector:', err);
+      }
+    };
+    loadPatientsList();
+  }, []);
+
   const fetchRiskAssessment = async () => {
     setLoading(true);
     setError(null);
     try {
       setLoadingStep('Resolving inpatient record from database...');
-      let targetId = activePatientId || (paramPatientId ? parseInt(paramPatientId, 10) : null);
+      let targetId = activePatientId;
       if (!targetId) {
-        try {
-          const pts = await patientService.getPatients();
-          if (pts && pts.length > 0) {
-            targetId = pts[0].id;
+        const pts = await patientService.getPatients();
+        if (pts && pts.length > 0) {
+          targetId = pts[0].id;
+          setActivePatientId(targetId);
+        } else {
+          const dsRes = await patientService.queryDatasetPatients({ page: 1, page_size: 1 });
+          if (dsRes.items && dsRes.items.length > 0) {
+            targetId = dsRes.items[0].id;
             setActivePatientId(targetId);
-          } else {
-            const dsRes = await patientService.queryDatasetPatients({ page: 1, page_size: 1 });
-            if (dsRes.items && dsRes.items.length > 0) {
-              targetId = dsRes.items[0].id;
-              setActivePatientId(targetId);
-            }
           }
-        } catch (e) {
-          console.warn('Could not list patients, using fallback patient 1:', e);
         }
       }
 
       if (!targetId) {
-        targetId = 1;
-        setActivePatientId(1);
+        throw new Error('No active inpatient records available for risk scoring.');
       }
 
       setLoadingStep('Retrieving encounter data from database...');
-      let p: any = null;
-      try {
-        p = await patientService.getPatientById(targetId);
-        setPatient(p);
-      } catch (e) {
-        console.warn('Patient fetch fallback:', e);
-      }
+      const p = await patientService.getPatientById(targetId);
+      setPatient(p);
 
       setLoadingStep('Preparing model feature vector (zero-leakage schema)...');
-      await new Promise(r => setTimeout(r, 120));
+      await new Promise(r => setTimeout(r, 100));
 
       setLoadingStep('Running calibrated LightGBM + XGBoost inference...');
-      const targetEncounter = encounterId || p?.encounters?.[0]?.id || 1;
-      try {
-        const resp = await apiClient.get(`/patients/${targetId}/encounters/${targetEncounter}/risk`);
-        setRiskData(resp.data?.data);
-      } catch (err: any) {
-        // Try direct prediction endpoint as fallback
-        const predResp = await apiClient.post(`/predict/readmission/${targetEncounter}`);
-        setRiskData(predResp.data?.data);
-      }
+      const resp = await apiClient.get(`/patients/${targetId}/encounters/${selectedEncounterId}/risk`);
+      setRiskData(resp.data?.data);
 
       setLoadingStep('Loading SHAP feature explanations...');
-      await new Promise(r => setTimeout(r, 100));
+      await new Promise(r => setTimeout(r, 80));
     } catch (err: any) {
       console.error('Failed to load risk assessment:', err);
-      const msg = err.response?.data?.detail || err.response?.data?.error?.message || err?.message || 'Readmission prediction unavailable.';
+      const msg = err.response?.data?.detail || err.response?.data?.error?.message || err?.message || 'Prediction Service Unavailable';
       setError(msg);
     } finally {
       setLoading(false);
@@ -132,8 +134,10 @@ export const RiskAssessmentPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchRiskAssessment();
-  }, [paramPatientId, encounterId]);
+    if (activePatientId) {
+      fetchRiskAssessment();
+    }
+  }, [activePatientId, selectedEncounterId]);
 
   const handleReScore = async () => {
     setIsScoring(true);
@@ -298,6 +302,85 @@ export const RiskAssessmentPage: React.FC = () => {
             Discharge Planning
           </button>
         </div>
+      </div>
+
+      {/* Searchable Patient & Encounter Selector Bar */}
+      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs space-y-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {/* Patient Search & Dropdown */}
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                Select Patient
+              </label>
+              <select
+                value={activePatientId || ''}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setActivePatientId(val);
+                }}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white"
+              >
+                {patientOptions.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.mrn} — {opt.first_name} {opt.last_name} ({opt.primary_diagnosis || 'Inpatient'})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Encounter Selector */}
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                Encounter ID
+              </label>
+              <select
+                value={selectedEncounterId}
+                onChange={(e) => setSelectedEncounterId(e.target.value)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white"
+              >
+                <option value="latest">Latest Inpatient Stay ({patient?.length_of_stay || 3} days)</option>
+                {((patient as any)?.encounters || []).map((enc: any) => (
+                  <option key={enc.id || enc.encounter_id} value={enc.id || enc.encounter_id}>
+                    ENC-{enc.id || enc.encounter_id} ({enc.admission_type || 'Inpatient'})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Run Assessment Action */}
+            <div className="flex items-end">
+              <button
+                type="button"
+                onClick={fetchRiskAssessment}
+                disabled={loading || isScoring}
+                className="w-full px-4 py-2 bg-sky-700 hover:bg-sky-800 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isScoring || loading ? 'animate-spin' : ''}`} />
+                <span>{loading ? 'Evaluating...' : 'Run Risk Assessment'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Active Patient Clinical Summary */}
+        {patient && (
+          <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-3 text-xs text-slate-600">
+            <span className="font-semibold text-slate-900">
+              Active Case: {patient.first_name} {patient.last_name}
+            </span>
+            <span>•</span>
+            <span className="font-mono text-slate-700">MRN: {patient.mrn}</span>
+            <span>•</span>
+            <span>Ward: {patient.current_ward || 'Inpatient Floor'}</span>
+            <span>•</span>
+            <span className="text-slate-800 font-medium">Diagnosis: {patient.primary_diagnosis || 'Type 2 Diabetes Mellitus'}</span>
+            <span>•</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+              Model Ready • diabetic_data.csv
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Hero Decision Support Prediction Card */}

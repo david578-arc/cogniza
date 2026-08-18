@@ -77,18 +77,8 @@ export const VitalsPanel: React.FC<VitalsPanelProps> = ({ patientId, encounterId
 
     // 4. Establish fresh scoped WebSocket connection
     try {
-      const isHttps = window.location.protocol === 'https:' || (import.meta.env.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL.startsWith('https'));
-      const wsProtocol = isHttps ? 'wss:' : 'ws:';
-      let wsHost = window.location.hostname;
-      if (import.meta.env.VITE_API_BASE_URL) {
-        try {
-          const parsed = new URL(import.meta.env.VITE_API_BASE_URL);
-          wsHost = parsed.host;
-        } catch {
-          // fallback
-        }
-      }
-      const wsUrl = `${wsProtocol}//${wsHost}/ws/patients/${patientId}/encounters/${encounterId}/vitals`;
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsProtocol}//${window.location.hostname}:8000/ws/patients/${patientId}/encounters/${encounterId}/vitals`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

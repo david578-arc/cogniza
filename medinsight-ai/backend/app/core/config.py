@@ -4,19 +4,19 @@ import os
 
 
 class Settings(BaseSettings):
-    # MongoDB Database Settings
+    # MongoDB Database Settings — configure via .env (never hardcode credentials here)
     MONGODB_URI: Optional[str] = None
-    MONGODB_URL: Optional[str] = "mongodb+srv://Roshan2106:1234@cognizant.mhj2q40.mongodb.net/?appName=Cognizant"
-    MONGODB_DATABASE: Optional[str] = None
-    MONGODB_DB_NAME: str = "medinsight_db"
+    MONGODB_DATABASE: str = "medinsight"
 
     @property
     def mongo_connection_uri(self) -> str:
-        return self.MONGODB_URI or self.MONGODB_URL or "mongodb://localhost:27017"
+        """Returns the MongoDB connection URI from environment. Falls back to localhost."""
+        return self.MONGODB_URI or "mongodb://localhost:27017"
 
     @property
     def mongo_db_name(self) -> str:
-        return self.MONGODB_DATABASE or self.MONGODB_DB_NAME or "medinsight"
+        """Returns the target MongoDB database name."""
+        return self.MONGODB_DATABASE or "medinsight"
 
     # JWT Authentication
     JWT_SECRET_KEY: str = "your-super-secret-jwt-key-change-in-production-min-32-chars"
@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     GENAI_MODEL: str = "gemini-1.5-flash"
 
     # CORS
-    CORS_ORIGINS: str = "https://gentle-mud-09bc59910.7.azurestaticapps.net,http://localhost:5173,http://localhost:5174,http://localhost:3000,*"
+    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
 
     # Risk thresholds
     RISK_LOW_MAX: float = 0.30
@@ -49,7 +49,7 @@ class Settings(BaseSettings):
         return [o.strip() for o in self.CORS_ORIGINS.split(",")]
 
     class Config:
-        env_file = ".env"
+        env_file = (".env", "../.env", "../../.env")
         extra = "ignore"
 
 

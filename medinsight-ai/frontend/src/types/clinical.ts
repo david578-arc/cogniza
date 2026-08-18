@@ -1,12 +1,31 @@
+export type UserRole =
+  | 'administrator'
+  | 'physician'
+  | 'nurse'
+  | 'care_coordinator'
+  | 'dietician'
+  | 'rehab_specialist'
+  | 'registration_staff'
+  | 'super_admin';
+
 export interface User {
   id: number;
+  staff_id?: string;
   email: string;
   username: string;
   full_name: string;
-  role: 'physician' | 'nurse' | 'care_coordinator' | 'administrator';
+  first_name?: string;
+  last_name?: string;
+  role: UserRole | string;
   department: string;
+  facility?: string;
+  permissions?: string[];
   is_active: boolean;
-  created_at: string;
+  must_change_password?: boolean;
+  failed_login_attempts?: number;
+  locked_until?: string | null;
+  last_login_at?: string | null;
+  created_at?: string;
 }
 
 export interface AuthState {
@@ -14,6 +33,64 @@ export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+}
+
+export interface AuditLogEntry {
+  id?: string;
+  user_id?: number | null;
+  staff_id?: string | null;
+  username: string;
+  action: string;
+  resource: string;
+  patient_id?: number | null;
+  encounter_id?: string | number | null;
+  details?: Record<string, any> | null;
+  ip_address?: string | null;
+  timestamp: string;
+}
+
+export interface SecurityStatus {
+  total_staff: number;
+  active_staff: number;
+  deactivated_staff: number;
+  locked_accounts: number;
+  active_sessions: number;
+  recent_events_count: number;
+  recent_events: AuditLogEntry[];
+}
+
+export interface RolePermissionMatrix {
+  role: string;
+  display_name: string;
+  description: string;
+  category: string;
+  permissions: string[];
+  staff_count: number;
+}
+
+export interface StaffUserCreate {
+  staff_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  role: string;
+  department: string;
+  facility: string;
+  temporary_password: string;
+  must_change_password: boolean;
+  permissions?: string[];
+}
+
+export interface StaffUserUpdate {
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  role?: string;
+  department?: string;
+  facility?: string;
+  is_active?: boolean;
+  permissions?: string[];
 }
 
 export interface Patient {
@@ -61,10 +138,12 @@ export interface Observation {
   encounter_id?: number;
   code: string;
   name: string;
+  observation_type?: string;
   value: number;
   value_string?: string;
   unit: string;
   recorded_at: string;
+  source?: string;
   status: 'Normal' | 'High' | 'Low' | 'Critical';
 }
 
@@ -324,65 +403,54 @@ export interface AnalyticsSummary {
     High: number;
     Critical: number;
   };
-  monthly_trend?: Array<{
+  monthly_trend: Array<{
     month: string;
     readmissionRate: number;
     nationalBenchmark: number;
     target: number;
     interventions: number;
-    [key: string]: any;
   }>;
-  readmission_by_diagnosis?: Array<{
-    diagnosis?: string;
-    category?: string;
-    rate?: number;
-    readmissionRate?: number;
-    patientCount?: number;
-    volume?: number;
+  readmission_by_diagnosis: Array<{
+    diagnosis: string;
+    rate: number;
+    patientCount: number;
     readmit30dCount?: number;
-    riskLevel?: string;
-    highRiskPct?: number;
-    [key: string]: any;
+    riskLevel: string;
   }>;
-  readmission_by_age_group?: Array<{
+  readmission_by_age_group: Array<{
     ageGroup: string;
     readmissionRate: number;
-    volume?: number;
-    patientCount?: number;
+    volume: number;
     readmit30dCount?: number;
     avgStayDays?: number;
-    avgStay?: number;
     avgRisk?: number;
-    [key: string]: any;
   }>;
-  department_distribution?: Array<{
+  department_distribution: Array<{
     department: string;
     criticalCount: number;
     highCount: number;
     total: number;
-    [key: string]: any;
   }>;
-  model_metrics?: {
-    auroc?: number;
-    accuracy?: number;
-    precision?: number;
-    recall?: number;
-    f1?: number;
-    brier_score?: number;
-    calibration_slope?: number;
-    calibration_intercept?: number;
+  model_metrics: {
+    auroc: number;
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1: number;
+    brier_score: number;
     decision_threshold?: number;
     model_name?: string;
-    model_version?: string;
+    model_version: string;
     evaluated_cohort_size?: number;
     total_training_records?: number;
+    total_validation_records?: number;
+    total_test_records?: number;
     unique_training_patients?: number;
     features_count?: number;
-    calibration_status?: string;
+    calibration_status: string;
     disclaimer?: string;
-    [key: string]: any;
   };
-  fairness_metrics?: Array<{
+  fairness_metrics: Array<{
     group: string;
     sample_size: number;
     accuracy: number;
@@ -390,7 +458,6 @@ export interface AnalyticsSummary {
     fpr: number;
     selection_rate: number;
     disparate_impact: number;
-    [key: string]: any;
   }>;
   total_dataset_encounters?: number;
   total_unique_patients?: number;
@@ -404,30 +471,6 @@ export interface AnalyticsSummary {
   insulin_stats?: Array<{ insulin_regimen: string; volume: number; readmissionRate: number }>;
   prior_inpatient_stats?: Array<{ inpatientVisits: string; volume: number; readmissionRate: number }>;
   los_stats?: Array<{ days: string; volume: number; readmissionRate: number }>;
-  cost_savings_total_usd?: number;
-  cost_per_readmission_usd?: number;
-  averted_readmissions_count?: number;
-  roi_percentage?: number;
-  hrrp_penalty_savings_usd?: number;
-  cost_savings_by_service?: Array<{ service: string; savings: number; averted: number; percentage: number; color: string }>;
-  total_hospital_beds?: number;
-  current_occupied_beds?: number;
-  current_occupancy_pct?: number;
-  icu_occupancy_pct?: number;
-  icu_capacity_pct?: number;
-  bed_turnover_hours?: number;
-  cms_penalty_avoidance_usd?: number;
-  care_transition_savings_usd?: number;
-  los_by_risk_tier?: Array<{ tier: string; los: number; target: number; nationalAvg: number; color: string }>;
-  department_metrics?: Array<{ department: string; beds: number; occupied: number; occupancy: number; readmissionRate: number; avgLos: number; criticalCount: number; highCount: number }>;
-  intervention_efficacy?: Array<{ intervention: string; reductionPct: number; patientsEnrolled: number; readmitRate: number; baselineRate: number; status: string }>;
-  care_coordination_kpis?: {
-    call_48h_completed_pct?: number;
-    pcp_7d_compliance_pct?: number;
-    med_supply_at_discharge_pct?: number;
-    dietary_plan_adherence_pct?: number;
-    [key: string]: any;
-  };
   [key: string]: any;
 }
 

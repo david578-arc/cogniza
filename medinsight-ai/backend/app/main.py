@@ -8,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from app.core.config import settings
 from app.database.mongo_seed import seed_mongodb
 from app.api import (
-    auth, patients, predictions, recommendations, analytics,
+    auth, admin, patients, predictions, recommendations, analytics,
     system, fhir, chat, reports, reference, vitals_ws,
     copilot, post_discharge
 )
@@ -49,14 +49,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Configure Comprehensive CORS (allowing all localhost ports, Amplify, and Cloud domains)
+# Configure Hardened CORS: Explicit trusted origins + LAN & Cloud regex
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
-    allow_origin_regex=r"^https?://.*",
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|.*\.vercel\.app|.*\.onrender\.com|.*\.azurewebsites\.net)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 
@@ -92,12 +93,14 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # Register API Routers
 app.include_router(auth.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
 app.include_router(patients.router, prefix="/api")
 app.include_router(copilot.router, prefix="/api")
 app.include_router(post_discharge.router, prefix="/api")
 app.include_router(reference.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
 app.include_router(reports.router, prefix="/api")
+app.include_router(reports.reports_router, prefix="/api")
 app.include_router(predictions.router, prefix="/api")
 app.include_router(recommendations.router, prefix="/api")
 app.include_router(analytics.router, prefix="/api")

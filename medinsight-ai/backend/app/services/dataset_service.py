@@ -257,6 +257,28 @@ class EnterpriseDatasetService:
             "items": items
         }
 
+    def get_high_risk_patients(self, filter_type: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        if self.df is None or self.df.empty:
+            return []
+        
+        sub = self.df
+        if filter_type == "critical":
+            sub = sub[sub['risk_level'] == 'Critical']
+        elif filter_type == "high":
+            sub = sub[sub['risk_level'] == 'High']
+        elif filter_type in ["discharging_today", "discharging_soon"]:
+            sub = sub[(sub['time_in_hospital'] <= 2) & (sub['risk_probability'] >= 0.45)]
+        elif filter_type == "med_rec_pending":
+            sub = sub[(sub['num_medications'] >= 15) & (sub['risk_probability'] >= 0.45)]
+        else:
+            sub = sub[sub['risk_probability'] >= 0.45]
+
+        sub = sub.sort_values(by='risk_probability', ascending=False)
+        items = []
+        for _, r in sub.head(limit).iterrows():
+            items.append(self._format_patient_dict(r))
+        return items
+
     def _format_patient_dict(self, r: Any) -> Dict[str, Any]:
         p_nbr = int(r.get('patient_nbr', r.get('encounter_id', 1)))
         enc_id = int(r.get('encounter_id', p_nbr))
@@ -711,17 +733,23 @@ class EnterpriseDatasetService:
             "model_metrics": {
                 "model_name": "MedInsight-Ensemble-XGBoost-LightGBM",
                 "model_version": "prod-v2.1",
-                "auroc": 0.6423,
-                "accuracy": 0.814,
-                "precision": 0.789,
-                "recall": 0.825,
-                "f1": 0.806,
-                "brier_score": 0.098,
-                "decision_threshold": 0.130,
-                "total_training_records": total_encs,
-                "unique_training_patients": total_patients,
-                "features_count": 77,
-                "calibration_status": "Isotonic Calibrated"
+                "auroc": 0.6435,
+                "pr_auc": 0.4464,
+                "accuracy": 0.4899,
+                "precision": 0.3644,
+                "recall": 0.8202,
+                "sensitivity": 0.8202,
+                "specificity": 0.3368,
+                "f1": 0.5046,
+                "brier_score": 0.2158,
+                "decision_threshold": 0.335,
+                "total_training_records": 72361,
+                "total_validation_records": 14721,
+                "total_test_records": 12261,
+                "unique_training_patients": 50062,
+                "features_count": 67,
+                "calibration_status": "Isotonic Calibrated",
+                "evaluation_source": "diabetes_readmission_notebook_final_model (Held-out Test Split)"
             }
         }
         return self.cached_analytics

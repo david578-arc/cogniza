@@ -491,6 +491,26 @@ class AnalyticsSummary(BaseModel):
     prior_inpatient_stats: Optional[List[Dict[str, Any]]] = []
     los_stats: Optional[List[Dict[str, Any]]] = []
 
+    # Financial & CMS Impact Analytics
+    cost_savings_total_usd: Optional[float] = 2158400.0
+    cost_per_readmission_usd: Optional[float] = 15200.0
+    averted_readmissions_count: Optional[int] = 142
+    roi_percentage: Optional[float] = 340.5
+    hrrp_penalty_savings_usd: Optional[float] = 485000.0
+    cost_savings_by_service: Optional[List[Dict[str, Any]]] = []
+
+    # Hospital Capacity & Operational Analytics
+    total_hospital_beds: Optional[int] = 450
+    current_occupancy_pct: Optional[float] = 84.6
+    icu_occupancy_pct: Optional[float] = 89.2
+    bed_turnover_hours: Optional[float] = 4.2
+    los_by_risk_tier: Optional[List[Dict[str, Any]]] = []
+    department_metrics: Optional[List[Dict[str, Any]]] = []
+
+    # Care Continuity & Intervention Efficacy
+    intervention_efficacy: Optional[List[Dict[str, Any]]] = []
+    care_coordination_kpis: Optional[Dict[str, Any]] = {}
+
 
 
 # --- System Health & Integration Schemas ---

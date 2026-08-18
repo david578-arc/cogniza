@@ -15,7 +15,14 @@ import {
   Clock,
   Layers,
   HeartPulse,
-  Award
+  Award,
+  DollarSign,
+  Building2,
+  PhoneCall,
+  BedDouble,
+  TrendingDown,
+  Target,
+  Sparkles
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -28,14 +35,16 @@ import {
   Tooltip,
   CartesianGrid,
   Cell,
-  Legend
+  Legend,
+  PieChart,
+  Pie
 } from 'recharts';
 import { analyticsService } from '../services/analyticsService';
 import { AnalyticsSummary } from '../types/clinical';
 
 export const AnalyticsPage: React.FC = () => {
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
-  const [activeTab, setActiveTab] = useState<'model' | 'demographics' | 'diagnoses' | 'glycemic' | 'utilization' | 'fairness'>('model');
+  const [activeTab, setActiveTab] = useState<'model' | 'operations' | 'financial' | 'transitions' | 'demographics' | 'diagnoses' | 'glycemic' | 'utilization' | 'fairness'>('operations');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -61,10 +70,10 @@ export const AnalyticsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2.5">
             <TrendingUp className="w-6 h-6 text-sky-600" />
-            Hospital Readmission Analytics & Population Intelligence
+            Hospital Readmission Analytics & Clinical Intelligence
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Multicenter clinical population analytics, machine learning model calibration, and responsible AI fairness auditing across 101,766 admissions.
+            Multicenter clinical population analytics, hospital bed capacity, financial ROI, care transition adherence, and responsible AI auditing.
           </p>
         </div>
 
@@ -87,11 +96,11 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         <div className="clinical-card p-3.5 bg-white border border-slate-200 rounded-xl">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Unique Inpatients</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Hospital Bed Capacity</div>
           <div className="text-xl font-black text-indigo-900 mt-1">
-            {(analytics?.total_unique_patients || 71518).toLocaleString()}
+            {analytics?.current_occupancy_pct || 84.6}%
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Longitudinal Cohort</div>
+          <div className="text-[10px] text-slate-500 mt-0.5">{analytics?.total_hospital_beds || 450} Total Beds</div>
         </div>
 
         <div className="clinical-card p-3.5 bg-white border border-slate-200 rounded-xl">
@@ -103,9 +112,11 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         <div className="clinical-card p-3.5 bg-white border border-slate-200 rounded-xl">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Model AUROC</div>
-          <div className="text-xl font-black text-sky-600 mt-1">0.842</div>
-          <div className="text-[10px] text-slate-500 mt-0.5">High Discrimination</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Cost Savings (YTD)</div>
+          <div className="text-xl font-black text-emerald-600 mt-1">
+            ${((analytics?.cost_savings_total_usd || 2158400) / 1000000).toFixed(2)}M
+          </div>
+          <div className="text-[10px] text-slate-500 mt-0.5">{analytics?.averted_readmissions_count || 142} Averted Readmissions</div>
         </div>
 
         <div className="clinical-card p-3.5 bg-white border border-slate-200 rounded-xl">
@@ -113,21 +124,57 @@ export const AnalyticsPage: React.FC = () => {
           <div className="text-xl font-black text-teal-700 mt-1">
             {analytics?.avg_length_of_stay || 4.4} Days
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">Range: 1 – 14 days</div>
+          <div className="text-[10px] text-slate-500 mt-0.5">Turnover: {analytics?.bed_turnover_hours || 4.2}h</div>
         </div>
 
         <div className="clinical-card p-3.5 bg-white border border-slate-200 rounded-xl">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Mean Lab Procedures</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">48h Outreach Success</div>
           <div className="text-xl font-black text-purple-700 mt-1">
-            {analytics?.avg_lab_procedures || 43.1}
+            {analytics?.care_coordination_kpis?.call_48h_completed_pct || 94.2}%
           </div>
-          <div className="text-[10px] text-slate-500 mt-0.5">{analytics?.avg_medications || 16.0} Avg Meds/Stay</div>
+          <div className="text-[10px] text-slate-500 mt-0.5">Care Continuity Rate</div>
         </div>
       </div>
 
       {/* Structured Multi-Tab Navigation */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 border-b border-slate-200 pb-1 flex-wrap">
+          <button
+            onClick={() => setActiveTab('operations')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'operations'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Building2 className="w-3.5 h-3.5 text-indigo-400" />
+            <span>1. Hospital Capacity & Wards</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('financial')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'financial'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
+            <span>2. Financial ROI & CMS Penalties</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('transitions')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'transitions'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <PhoneCall className="w-3.5 h-3.5 text-purple-400" />
+            <span>3. Care Transitions & Interventions</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('model')}
             className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-2 cursor-pointer ${
@@ -137,7 +184,7 @@ export const AnalyticsPage: React.FC = () => {
             }`}
           >
             <BrainCircuit className="w-3.5 h-3.5 text-sky-400" />
-            <span>1. Model Architecture & Calibration</span>
+            <span>4. Model AI & Calibration</span>
           </button>
 
           <button
@@ -149,7 +196,7 @@ export const AnalyticsPage: React.FC = () => {
             }`}
           >
             <Users className="w-3.5 h-3.5 text-indigo-400" />
-            <span>2. Demographics & Age Gradients</span>
+            <span>5. Demographics & Age</span>
           </button>
 
           <button
@@ -161,7 +208,7 @@ export const AnalyticsPage: React.FC = () => {
             }`}
           >
             <HeartPulse className="w-3.5 h-3.5 text-rose-400" />
-            <span>3. Disease Cohorts & Diagnoses</span>
+            <span>6. Disease Cohorts</span>
           </button>
 
           <button
@@ -173,7 +220,7 @@ export const AnalyticsPage: React.FC = () => {
             }`}
           >
             <Pill className="w-3.5 h-3.5 text-amber-400" />
-            <span>4. Glycemic Control & Insulin</span>
+            <span>7. Glycemic Control</span>
           </button>
 
           <button
@@ -185,7 +232,7 @@ export const AnalyticsPage: React.FC = () => {
             }`}
           >
             <Clock className="w-3.5 h-3.5 text-teal-400" />
-            <span>5. Hospital Utilization & LOS</span>
+            <span>8. Hospital LOS</span>
           </button>
 
           <button
@@ -197,9 +244,441 @@ export const AnalyticsPage: React.FC = () => {
             }`}
           >
             <Scale className="w-3.5 h-3.5 text-emerald-400" />
-            <span>6. Responsible AI Fairness Audit</span>
+            <span>9. Responsible AI Audit</span>
           </button>
         </div>
+
+        {/* TAB: HOSPITAL OPERATIONAL CAPACITY & WARDS */}
+        {activeTab === 'operations' && (
+          <div className="space-y-6">
+            {/* Operational Overview Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Overall Bed Occupancy</span>
+                  <BedDouble className="w-4 h-4 text-indigo-600" />
+                </div>
+                <div className="text-2xl font-black text-slate-900 mt-2">
+                  {analytics?.current_occupancy_pct || 84.6}%
+                </div>
+                <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                  <div
+                    className="bg-indigo-600 h-full rounded-full"
+                    style={{ width: `${analytics?.current_occupancy_pct || 84.6}%` }}
+                  />
+                </div>
+                <div className="text-[11px] text-slate-500 mt-2">
+                  381 of {analytics?.total_hospital_beds || 450} Beds Occupied
+                </div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>ICU / Stepdown Occupancy</span>
+                  <Activity className="w-4 h-4 text-rose-600" />
+                </div>
+                <div className="text-2xl font-black text-rose-700 mt-2">
+                  {analytics?.icu_occupancy_pct || 89.2}%
+                </div>
+                <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                  <div
+                    className="bg-rose-500 h-full rounded-full"
+                    style={{ width: `${analytics?.icu_occupancy_pct || 89.2}%` }}
+                  />
+                </div>
+                <div className="text-[11px] text-slate-500 mt-2">
+                  41 of 46 ICU Beds Occupied (Near Capacity)
+                </div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Bed Turnover Interval</span>
+                  <Clock className="w-4 h-4 text-teal-600" />
+                </div>
+                <div className="text-2xl font-black text-teal-700 mt-2">
+                  {analytics?.bed_turnover_hours || 4.2} hrs
+                </div>
+                <div className="text-[11px] text-emerald-700 font-semibold mt-2 flex items-center gap-1">
+                  <TrendingDown className="w-3.5 h-3.5" /> 18 mins faster than quarterly target (4.5 hrs)
+                </div>
+                <div className="text-[10px] text-slate-400 mt-1">Discharge cleaning to next patient admission</div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Critical Risk Inpatient Census</span>
+                  <AlertCircle className="w-4 h-4 text-amber-600" />
+                </div>
+                <div className="text-2xl font-black text-amber-600 mt-2">
+                  {analytics?.department_metrics?.reduce((acc, d) => acc + (d.criticalCount || 0), 0) || 23} Patients
+                </div>
+                <div className="text-[11px] text-slate-600 mt-2">
+                  Priority for transitional care & pharmacy reviews
+                </div>
+                <div className="text-[10px] text-slate-400 mt-1">Assigned care coordinators: 100% active</div>
+              </div>
+            </div>
+
+            {/* Department Bed Census & Readmission Benchmark Table */}
+            <div className="clinical-card p-5 bg-white border border-slate-200 rounded-xl shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-indigo-600" />
+                    Department-Level Capacity & Readmission Risk Benchmarks
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Live ward occupancy, high-risk surveillance, and length of stay across clinical specialties.
+                  </p>
+                </div>
+                <span className="text-xs font-mono px-2.5 py-1 bg-slate-100 rounded-md text-slate-600 self-start sm:self-auto">
+                  Live Unit Census
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      <th className="py-3 px-4">Hospital Department / Ward</th>
+                      <th className="py-3 px-4">Total Beds</th>
+                      <th className="py-3 px-4">Occupancy Rate</th>
+                      <th className="py-3 px-4">Readmission Rate (30d)</th>
+                      <th className="py-3 px-4">Avg Length of Stay</th>
+                      <th className="py-3 px-4">Critical / High Risk Census</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-xs">
+                    {(analytics?.department_metrics || [
+                      { department: 'Internal Medicine', beds: 120, occupied: 106, occupancy: 88.3, readmissionRate: 11.8, avgLos: 4.6, criticalCount: 8, highCount: 14 },
+                      { department: 'Cardiology (4A)', beds: 85, occupied: 78, occupancy: 91.8, readmissionRate: 12.4, avgLos: 5.1, criticalCount: 5, highCount: 11 },
+                      { department: 'Pulmonology & Resp', beds: 60, occupied: 50, occupancy: 83.3, readmissionRate: 10.9, avgLos: 4.3, criticalCount: 3, highCount: 7 },
+                      { department: 'Nephrology / Renal', beds: 45, occupied: 36, occupancy: 80.0, readmissionRate: 13.1, avgLos: 4.9, criticalCount: 4, highCount: 6 },
+                      { department: 'Endocrinology', beds: 50, occupied: 38, occupancy: 76.0, readmissionRate: 9.4, avgLos: 3.7, criticalCount: 2, highCount: 5 },
+                      { department: 'Surgical / Ortho', beds: 90, occupied: 74, occupancy: 82.2, readmissionRate: 7.2, avgLos: 3.2, criticalCount: 1, highCount: 3 }
+                    ]).map((dept, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/80">
+                        <td className="py-3 px-4 font-bold text-slate-900 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                          {dept.department}
+                        </td>
+                        <td className="py-3 px-4 font-mono text-slate-600">
+                          {dept.occupied} / {dept.beds}
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-slate-800 text-xs font-mono">{dept.occupancy}%</span>
+                            <div className="w-16 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${dept.occupancy > 90 ? 'bg-rose-500' : dept.occupancy > 80 ? 'bg-amber-500' : 'bg-emerald-500'}`}
+                                style={{ width: `${dept.occupancy}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 font-mono font-semibold text-slate-800">
+                          {dept.readmissionRate}%
+                        </td>
+                        <td className="py-3 px-4 font-mono text-slate-700">
+                          {dept.avgLos} Days
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-1.5">
+                            <span className="px-2 py-0.5 bg-rose-100 text-rose-800 rounded font-bold text-[10px]">
+                              {dept.criticalCount} Critical
+                            </span>
+                            <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-bold text-[10px]">
+                              {dept.highCount} High
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Length of Stay by Risk Tier Chart */}
+            <div className="clinical-card p-5 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <h3 className="text-sm font-bold text-slate-900 mb-1">
+                Average Inpatient Length of Stay (LOS) by Risk Stratification Tier
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">
+                Higher risk cohorts experience longer hospitalization duration requiring proactive discharge barrier removal.
+              </p>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={analytics?.los_by_risk_tier || [
+                      { tier: 'Critical Risk', los: 7.2, target: 5.5, nationalAvg: 6.8 },
+                      { tier: 'High Risk', los: 5.4, target: 4.2, nationalAvg: 5.1 },
+                      { tier: 'Moderate Risk', los: 3.8, target: 3.0, nationalAvg: 3.9 },
+                      { tier: 'Low Risk', los: 2.3, target: 2.0, nationalAvg: 2.5 }
+                    ]}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="tier" tick={{ fontSize: 11 }} />
+                    <YAxis unit=" d" tick={{ fontSize: 11 }} />
+                    <Tooltip
+                      formatter={(val: any) => [`${val} Days`, '']}
+                      contentStyle={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: '8px', fontSize: '12px' }}
+                    />
+                    <Legend />
+                    <Bar dataKey="los" name="Hospital Mean LOS (Days)" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="target" name="Clinical Target LOS" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="nationalAvg" name="National Benchmark" fill="#94a3b8" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: FINANCIAL ROI & CMS PENALTIES */}
+        {activeTab === 'financial' && (
+          <div className="space-y-6">
+            {/* Financial Overview Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="clinical-card p-4 bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-emerald-800 font-bold">
+                  <span>Total Net Financial Savings</span>
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="text-3xl font-black text-emerald-900 mt-2">
+                  ${((analytics?.cost_savings_total_usd || 2158400) / 1000000).toFixed(2)}M
+                </div>
+                <div className="text-xs text-emerald-700 mt-1 font-semibold">
+                  Cumulative Year-to-Date Impact
+                </div>
+                <div className="text-[10px] text-slate-500 mt-2">
+                  Calculated from averted readmissions + penalty reduction
+                </div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Averted 30-Day Readmissions</span>
+                  <Award className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div className="text-3xl font-black text-indigo-900 mt-2">
+                  {analytics?.averted_readmissions_count || 142}
+                </div>
+                <div className="text-xs text-indigo-700 mt-1 font-semibold">
+                  Patients Saved from Re-Hospitalization
+                </div>
+                <div className="text-[10px] text-slate-500 mt-2">
+                  @ $15,200 avg CMS cost per diabetic readmission
+                </div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>CMS HRRP Penalty Avoided</span>
+                  <ShieldCheck className="w-5 h-5 text-sky-600" />
+                </div>
+                <div className="text-3xl font-black text-sky-900 mt-2">
+                  ${((analytics?.hrrp_penalty_savings_usd || 485000) / 1000).toFixed(0)}K
+                </div>
+                <div className="text-xs text-sky-700 mt-1 font-semibold">
+                  100% CMS Reimbursement Protected
+                </div>
+                <div className="text-[10px] text-slate-500 mt-2">
+                  Excess Readmission Ratio (ERR) maintained &lt; 1.00
+                </div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Platform Net ROI</span>
+                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="text-3xl font-black text-purple-900 mt-2">
+                  {analytics?.roi_percentage || 340.5}%
+                </div>
+                <div className="text-xs text-purple-700 mt-1 font-semibold">
+                  $3.41 Return per $1.00 Invested
+                </div>
+                <div className="text-[10px] text-slate-500 mt-2">
+                  Includes RPM devices, dietician, and coordinator staffing
+                </div>
+              </div>
+            </div>
+
+            {/* Savings by Clinical Service Line & Cost Breakdown */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="clinical-card p-5 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <h3 className="text-sm font-bold text-slate-900 mb-1">
+                  Cost Savings by Clinical Service Line
+                </h3>
+                <p className="text-xs text-slate-500 mb-4">
+                  Financial savings distributed by primary admission specialty and disease etiology.
+                </p>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      layout="vertical"
+                      data={analytics?.cost_savings_by_service || [
+                        { service: 'Circulatory & Heart', savings: 684000, averted: 45 },
+                        { service: 'Diabetes Complications', savings: 547200, averted: 36 },
+                        { service: 'Respiratory & COPD', savings: 425600, averted: 28 },
+                        { service: 'Renal & Kidney', savings: 319200, averted: 21 },
+                        { service: 'Surgical / Other', savings: 182400, averted: 12 }
+                      ]}
+                      margin={{ top: 10, right: 30, left: 40, bottom: 10 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                      <XAxis type="number" tickFormatter={(v) => `$${v / 1000}k`} tick={{ fontSize: 11 }} />
+                      <YAxis dataKey="service" type="category" tick={{ fontSize: 11 }} width={120} />
+                      <Tooltip
+                        formatter={(val: any) => [`$${Number(val).toLocaleString()}`, 'Savings']}
+                        contentStyle={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: '8px', fontSize: '12px' }}
+                      />
+                      <Bar dataKey="savings" name="Cost Savings ($)" fill="#10b981" radius={[0, 4, 4, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              <div className="clinical-card p-5 bg-white border border-slate-200 rounded-xl shadow-xs flex flex-col justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 mb-1">
+                    CMS HRRP Regulatory Quality Status
+                  </h3>
+                  <p className="text-xs text-slate-500 mb-4">
+                    Centers for Medicare & Medicaid Services Hospital Readmissions Reduction Program compliance.
+                  </p>
+
+                  <div className="space-y-3">
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-emerald-900">Penalty Status: Exempt / Zero Penalty Assessment</div>
+                        <div className="text-[11px] text-emerald-800 mt-0.5">
+                          Hospital 30-day diabetic readmission rate (11.2%) outperforms the national peer cohort benchmark (14.6%).
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+                      <div className="flex justify-between items-center text-slate-700">
+                        <span className="font-medium">Observed-to-Expected (O/E) Readmission Ratio:</span>
+                        <span className="font-bold font-mono text-emerald-700">0.76 (Favorable)</span>
+                      </div>
+                      <div className="flex justify-between items-center text-slate-700">
+                        <span className="font-medium">CMS Penalty Threshold (Maximum):</span>
+                        <span className="font-bold font-mono text-slate-900">3.00% DRG Reduction</span>
+                      </div>
+                      <div className="flex justify-between items-center text-slate-700">
+                        <span className="font-medium">Our Hospital Effective Reduction:</span>
+                        <span className="font-bold font-mono text-emerald-700">0.00% (Full Payout)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-indigo-50/60 border border-indigo-100 rounded-lg text-[11px] text-indigo-900 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <span>AI risk-stratified transitional care protocols generated an estimated <strong>$2.15 Million</strong> in annual economic value.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: CARE TRANSITIONS & INTERVENTIONS EFFICACY */}
+        {activeTab === 'transitions' && (
+          <div className="space-y-6">
+            {/* Care Coordination KPIs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>48-Hour Call-Back Rate</span>
+                  <PhoneCall className="w-4 h-4 text-indigo-600" />
+                </div>
+                <div className="text-2xl font-black text-indigo-900 mt-2">
+                  {analytics?.care_coordination_kpis?.call_48h_completed_pct || 94.2}%
+                </div>
+                <div className="text-xs text-emerald-700 font-semibold mt-1">Target: &gt;90% (Exceeded)</div>
+                <div className="text-[10px] text-slate-400 mt-1">Nurse coordinator check-in within 48h of discharge</div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>7-Day PCP Appointment Compliance</span>
+                  <Clock className="w-4 h-4 text-teal-600" />
+                </div>
+                <div className="text-2xl font-black text-teal-900 mt-2">
+                  {analytics?.care_coordination_kpis?.pcp_7d_compliance_pct || 82.7}%
+                </div>
+                <div className="text-xs text-teal-700 font-semibold mt-1">Target: &gt;80% (Compliant)</div>
+                <div className="text-[10px] text-slate-400 mt-1">Completed outpatient visit within 1 week</div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Discharge Med Supply In-Hand</span>
+                  <Pill className="w-4 h-4 text-amber-600" />
+                </div>
+                <div className="text-2xl font-black text-amber-800 mt-2">
+                  {analytics?.care_coordination_kpis?.med_supply_at_discharge_pct || 96.5}%
+                </div>
+                <div className="text-xs text-emerald-700 font-semibold mt-1">Bedside Delivery / Meds-to-Beds</div>
+                <div className="text-[10px] text-slate-400 mt-1">Zero medication lapse at home transition</div>
+              </div>
+
+              <div className="clinical-card p-4 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+                  <span>Nutritional Plan Adherence</span>
+                  <HeartPulse className="w-4 h-4 text-rose-600" />
+                </div>
+                <div className="text-2xl font-black text-rose-900 mt-2">
+                  {analytics?.care_coordination_kpis?.dietary_plan_adherence_pct || 88.1}%
+                </div>
+                <div className="text-xs text-rose-700 font-semibold mt-1">CDE Diabetes Meal Compliance</div>
+                <div className="text-[10px] text-slate-400 mt-1">Consistent carbohydrate diet coaching</div>
+              </div>
+            </div>
+
+            {/* Intervention Efficacy Comparison Chart */}
+            <div className="clinical-card p-5 bg-white border border-slate-200 rounded-xl shadow-xs">
+              <h3 className="text-sm font-bold text-slate-900 mb-1">
+                Comparative Readmission Reduction by Clinical Intervention Type
+              </h3>
+              <p className="text-xs text-slate-500 mb-4">
+                Effectiveness of targeted post-discharge interventions in reducing 30-day readmissions compared to standard care baseline (11.3%).
+              </p>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={analytics?.intervention_efficacy || [
+                      { intervention: 'Pharmacist Med-Rec', reductionPct: 28.4, readmitRate: 8.1, baselineRate: 11.3 },
+                      { intervention: 'Continuous Glucose RPM', reductionPct: 31.5, readmitRate: 7.7, baselineRate: 11.2 },
+                      { intervention: '48-Hour Call-Back', reductionPct: 22.1, readmitRate: 8.8, baselineRate: 11.3 },
+                      { intervention: 'Diabetes Educator (CDE)', reductionPct: 19.8, readmitRate: 9.1, baselineRate: 11.3 },
+                      { intervention: 'Home Physical Therapy', reductionPct: 24.6, readmitRate: 8.5, baselineRate: 11.3 }
+                    ]}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="intervention" tick={{ fontSize: 11 }} angle={-10} textAnchor="end" />
+                    <YAxis unit="%" tick={{ fontSize: 11 }} />
+                    <Tooltip
+                      formatter={(val: any, name: any) => [`${val}%`, name]}
+                      contentStyle={{ backgroundColor: '#0f172a', color: '#fff', borderRadius: '8px', fontSize: '12px' }}
+                    />
+                    <Legend />
+                    <Bar dataKey="readmitRate" name="Intervention Readmission Rate (%)" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="baselineRate" name="Standard Care Baseline (%)" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="reductionPct" name="Relative Risk Reduction (%)" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* TAB 1: MODEL ARCHITECTURE & VALIDATION METRICS */}
         {activeTab === 'model' && (

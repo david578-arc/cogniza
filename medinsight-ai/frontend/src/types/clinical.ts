@@ -390,6 +390,25 @@ export interface AnalyticsSummary {
   insulin_stats?: Array<{ insulin_regimen: string; volume: number; readmissionRate: number }>;
   prior_inpatient_stats?: Array<{ inpatientVisits: string; volume: number; readmissionRate: number }>;
   los_stats?: Array<{ days: string; volume: number; readmissionRate: number }>;
+  cost_savings_total_usd?: number;
+  cost_per_readmission_usd?: number;
+  averted_readmissions_count?: number;
+  roi_percentage?: number;
+  hrrp_penalty_savings_usd?: number;
+  cost_savings_by_service?: Array<{ service: string; savings: number; averted: number; percentage: number; color: string }>;
+  total_hospital_beds?: number;
+  current_occupancy_pct?: number;
+  icu_occupancy_pct?: number;
+  bed_turnover_hours?: number;
+  los_by_risk_tier?: Array<{ tier: string; los: number; target: number; nationalAvg: number; color: string }>;
+  department_metrics?: Array<{ department: string; beds: number; occupied: number; occupancy: number; readmissionRate: number; avgLos: number; criticalCount: number; highCount: number }>;
+  intervention_efficacy?: Array<{ intervention: string; reductionPct: number; patientsEnrolled: number; readmitRate: number; baselineRate: number; status: string }>;
+  care_coordination_kpis?: {
+    call_48h_completed_pct?: number;
+    pcp_7d_compliance_pct?: number;
+    med_supply_at_discharge_pct?: number;
+    dietary_plan_adherence_pct?: number;
+  };
 }
 
 
